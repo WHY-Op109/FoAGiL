@@ -22,43 +22,48 @@
 \section{Categories and functors}
 
 \begin{definition}[Category]
-  Define a \textbf{category} $\cat{C}$ as a $4$-tuple $\bra{\cat{Obj}\bra{\cat{C}}, \cat{Mor}\bra{\cat{C}}, \mathrm{id}, \circ}$ where the following data is collected:
+  Define a \textit{category} $\cat{C}$ as a $4$-tuple $\bra{\cat{Obj}\bra{\cat{C}}, \cat{Mor}\bra{\cat{C}}, \cat{dom}, \cat{codom}, \cat{id}, \circ}$, where
   \begin{itemize}
-    \item $\cat{Obj}\bra{\cat{C}}$, a collection (class or set) of \textbf{objects} of the category.
-    \item $\cat{Mor}\bra{\cat{C}}$, a collection (class or set) of \textbf{morphisms} (or \textbf{arrows}) of the category.
-    \item For each pair of objects $X, Y \in \cat{Obj}\bra{\cat{C}}$, a collection of \textbf{morphisms} (or \textbf{arrows}), denoted $\cat{Hom}_{\cat{C}}(X, Y)$.
-    \item For each object $X$, an \textbf{identity morphism} $\cat{id}_X \in \cat{Hom}_{\cat{C}}(X, X)$.
-    \item For each triple of objects $X, Y, Z$, a \textbf{composition} operation
+    \item $\cat{Obj}\bra{\cat{C}}$ is a class of \textit{objects} of the category.
+    \item $\cat{Mor}\bra{\cat{C}}$ is a class of \textit{morphisms} (or \textit{arrows}) of the category.
+    \item $\cat{dom}, \cat{codom} \colon \cat{Mor}\bra{\cat{C}} \to \cat{Obj}\bra{\cat{C}}$ are maps that assign to each morphism its \textit{domain} (or \textit{source}) and \textit{codomain} (or \textit{target}) respectively.
+    \item
     \begin{align*}
-    \circ \colon \cat{Hom}_{\cat{C}}(Y, Z) \times \cat{Hom}_{\cat{C}}(X, Y) & \to \cat{Hom}_{\cat{C}}(X, Z) \\
-     (g, f) & \mapsto g \circ f
+      \cat{Hom}_{\cat{C}}\colon \cat{Obj}\bra{\cat{C}} \times \cat{Obj}\bra{\cat{C}} & \to \mathcal{P}\bra{\cat{Mor}\bra{\cat{C}}} \\
+      (X, Y) & \mapsto \bbra{f \in \cat{Mor}\bra{\cat{C}} \mid \cat{dom}\bra{f} = X \land \cat{codom}\bra{f} = Y}
     \end{align*}
+    is a map that assigns to each pair of objects $X, Y$ the collection of morphisms from $X$ to $Y$.
+    \item
+      \begin{align*}
+      \cat{id} \colon \cat{Obj}\bra{\cat{C}} & \to \cat{Hom}_{\cat{C}}(X, X) \\
+      X & \mapsto \operatorname{id}_X
+      \end{align*}
+    \item
+    \begin{align*}
+      \circ \colon \bbra{(f, g) \in \cat{Mor}\bra{\cat{C}}^2  \mid \cat{codom}\bra{f} = \cat{dom}\bra{g}} & \to \cat{Hom}_{\cat{C}}\bra{\cat{dom}\bra{f}, \cat{codom}\bra{g}} \\
+      (f, g) & \mapsto \sbra{g \circ f: \cat{dom}\bra{f} \to \cat{codom}\bra{g}}
+    \end{align*}
+    such that the following axioms are satisfied
   \end{itemize}
-  These data must satisfy the following axioms:
-  \begin{itemize}
-    \item \textit{Identity laws}: $\bra{\forall f \in \cat{Hom}_{\cat{C}}(X, Y)} \colon \cat{id}_Y \circ f = f \land f \circ \cat{id}_X = f$.
-    \item \textit{Associativity}: $\bra{\forall f \in \cat{Hom}_{\cat{C}}(X, Y)} \bra{\forall g \in \cat{Hom}_{\cat{C}}(Y, Z)} \bra{\forall h \in \cat{Hom}_{\cat{C}}(Z, W)} \colon (h \circ g) \circ f = h \circ (g \circ f)$.
-  \end{itemize}
+    \begin{itemize}
+      \item $\bra{\texttt{A1. associativity}}$.
+      \[
+      \bra{\forall X, Y, Z \in \cat{C}} \bra{\forall f \in \cat{Hom}_{\cat{C}}\bra{X, Y}} \bra{\forall g \in \cat{Hom}_{\cat{C}}\bra{Y, Z}} \bra{\forall h \in \cat{Hom}_{\cat{C}}\bra{Z, W}} \colon h \circ (g \circ f) = (h \circ g) \circ f
+      \]
+      \item $\bra{\texttt{A2. identity}}$.
+      \[
+      \bra{\forall X , Y\in \cat{C}} \bra{\forall f \in \cat{Hom}_{\cat{C}}\bra{X, Y}} \colon \operatorname{id}_Y \circ f = f = f \circ \operatorname{id}_X
+      \]
+    \end{itemize}
 \end{definition}
 
 \begin{definition}[Isomorphism]
-  Let $\cat{C}$ be a category and $X, Y \in \cat{Obj}\bra{\cat{C}}$. Define an \textbf{isomorphism} from $X$ to $Y$ to be a morphism $f: X \to Y$ such that
+  Let $\cat{C}$ be a category and $X, Y \in \cat{Obj}\bra{\cat{C}}$. Define an \textit{isomorphism} from $X$ to $Y$ to be a morphism $f: X \to Y$ such that
   \[
   \bra{\exists! g: Y \to X} \colon g \circ f = \cat{id}_X \land f \circ g = \cat{id}_Y.
   \]
   and we denote this as $X \cong Y$.
 \end{definition}
-
-\begin{example}[The category of types]
-  $\cat{Type}$ is a category where
-  \begin{itemize}
-    \item $\cat{Obj}\bra{\cat{Type}} \dfs \bbra{\text{all types in Lean}}$.
-    \item $\cat{Mor}\bra{\cat{Type}} \dfs \bbra{\text{all functions between types in Lean}}$.
-    \item $\cat{Hom}_{\cat{Type}}(X, Y) \dfs \bbra{\text{all functions from } X \text{ to } Y}$.
-    \item Identity morphism: for each type $X$, the identity morphism $\cat{id}_X$ is the identity function on $X$.
-    \item Composition: for functions $f \colon X \to Y$ and $g \colon Y \to Z$, their composition $g \circ f \colon X \to Z$ is defined by $(g \circ f)(x) = g(f(x))$ for all $x \in X$.
-  \end{itemize}
-\end{example}
 
 \begin{example}
   \begin{itemize}
@@ -74,9 +79,9 @@
 \end{example}
 
 \begin{exercise}[Groupid]
-  Define a \textbf{groupoid} as a category such that
+  Define a \textit{groupoid} as a category $\cat{G}$ such that
   \[
-  \bra{\forall f \in \cat{Mor}\bra{\cat{C}}} \colon f \text{ is an isomorphism}.
+  \bra{\forall f \in \cat{Mor}\bra{\cat{G}}} \colon f \text{ is an isomorphism}
   \]
   \begin{enumerate}
     \item Show that any group can be viewed as a groupoid with a single object.
@@ -84,73 +89,27 @@
   \end{enumerate}
 \end{exercise}
 
-\begin{exercise}[Automorphism group]
-  Let $\cat{C}$ be a category. Define the \textsf{automorphisms} on the category $\cat{C}$ as a map
+\begin{exercise}[Automorphism group]\label{exercise:automorphism_group}
+  Let $\cat{C}$ be a category. Define the \textit{automorphisms} on the category $\cat{C}$ as a map
   \begin{align*}
     \cat{Aut}_\cat{C} \colon \cat{Obj}\bra{\cat{C}} &\to \cat{Obj}\bra{\cat{Type}} \\
-    X &\mapsto \bbra{f: X \to X \mid f \text{ is an isomorphism}}.
+    X &\mapsto \bbra{f: X \to X \mid f \text{ is an isomorphism}}
   \end{align*}
   \begin{enumerate}
     \item Show that this is well-defined, i.e., for each object $X$, the collection $\cat{Aut}_\cat{C}(X)$ is not empty.
     \item Show that for each object $X$, the collection $\cat{Aut}_\cat{C}(X)$ forms a group under the composition operation.
     \item Show that
     \[
-    \bra{\forall A, B \in \cat{Obj}\bra{\cat{C}}} \colon A \cong B \rightarrow \cat{Aut}_{\cat{C}}(A) \cong \cat{Aut}_{\cat{C}}(B).
+    \bra{\forall A, B \in \cat{Obj}\bra{\cat{C}}} \colon A \cong B \rightarrow \cat{Aut}_{\cat{C}}(A) \cong \cat{Aut}_{\cat{C}}\bra{B}
     \]
-    \item What is the automorphisms group of the obejects in the category $\cat{Set}$ and $\cat{Vec}_k$?
-    \item (Optional, hard) Let $X$ be a topological space and $\Pi\bra{X}$ be its fundamental groupoid. Show that
+    \item What is the automorphisms group of the obejects in the category $\cat{Set}$ and $\cat{Vec}_k$ (the category of vector spaces over a field $k$)?
+    \item (Optional, hard) Let $X$ be a topological space, $\Pi\bra{X}$ be its fundamental groupoid and $x_0 \in X$ be a point in $X$. Show that
     \begin{enumerate}
       \item $\bra{\forall x_0 \in X} \colon \cat{Aut}_{\Pi\bra{X}}(x_0) = \pi_1\bra{X, x_0}$, where $\pi_1\bra{X, x_0}$ is the fundamental group of $X$ based at $x_0$.
-      % \begin{proof}
-      % Take any $x_0 \in X$. The equality $\cat{Aut}_{\Pi\bra{X}}(x_0) = \pi_1\bra{X, x_0}$ follows directly from the definitions of the automorphism group in the fundamental groupoid and the fundamental group itself.
-      % \end{proof}
       \item If $\cat{G}$ is a connected-groupoid, then
       \[
-      \bra{\forall x, y \in \cat{Obj}\bra{\cat{G}}} \colon \cat{Aut}_{\cat{G}}(x) \cong \cat{Aut}_{\cat{G}}(y).
+      \bra{\forall x, y \in \cat{Obj}\bra{\cat{G}}} \colon \cat{Aut}_{\cat{G}}(x) \cong \cat{Aut}_{\cat{G}}\bra{y}
       \]
-      \begin{proof}
-        % Assume $\cat{G}$ is a connected groupoid. Take any $x, y \in \cat{Obj}\bra{\cat{G}}$. We will construct an isomorphism between $\cat{Aut}_{\cat{G}}(x)$ and $\cat{Aut}_{\cat{G}}(y)$. Apply the connectedness of $\cat{G}$, $\cat{Hom}_{\cat{G}}(x, y)$ is non-empty. Choose any morphism $f: x \to y$. Since $\cat{G}$ is a groupoid, $f$ is an isomorphism, hence has an inverse $f^{-1}: y \to x$. Define a map $\Phi_f: G_x \to G_y$ by conjugation,
-        % \begin{align*}
-        % \varphi_f: \cat{Aut}_{\cat{G}}(x) &\to \cat{Aut}_{\cat{G}}(y) \\
-        % g &\mapsto f \circ g \circ f^{-1}.
-        % \end{align*}
-        % Check that $\Phi_f$ is a well-defined. Suffice to show $\varphi_f$ is an isomorphism of groups.
-        % \begin{itemize}
-        %   \item ($\varphi$ is a morphism of groups). Take any $g_1, g_2 \in \cat{Aut}_{\cat{G}}(x)$. Calculate
-        %   \begin{align*}
-        %     \varphi_f(g_1 \circ g_2) &= f \circ (g_1 \circ g_2) \circ f^{-1} \\
-        %     &= f \circ g_1 \circ g_2 \circ f^{-1} \\
-        %     &= (f \circ g_1 \circ f^{-1}) \circ (f \circ g_2 \circ f^{-1}) \\
-        %     &= \varphi_f(g_1) \circ \varphi_f(g_2)
-        %   \end{align*}
-        %   \item ($\varphi$ is a bijection). Let
-        %   \begin{align*}
-        %     \psi_f: \cat{Aut}_{\cat{G}}(y) &\to \cat{Aut}_{\cat{G}}(x) \\
-        %     h &\mapsto f^{-1} \circ h \circ f.
-        %   \end{align*}
-        %   Use $\psi_f$ to finish the proof,
-        %   \begin{itemize}
-        %   \item ($\psi_f \circ \varphi_f = \mathrm{id}_{\cat{Aut}_{\cat{G}}(x)}$). Take any $g \in \cat{Aut}_{\cat{G}}(x)$. Calculate
-        %   \begin{align*}
-        %     (\psi_f \circ \varphi_f)(g) &= \psi_f(\varphi_f(g)) \\
-        %     &= \psi_f(f \circ g \circ f^{-1}) \\
-        %     &= f^{-1} \circ (f \circ g \circ f^{-1}) \circ f \\
-        %     &= (f^{-1} \circ f) \circ g \circ (f^{-1} \circ f) \\
-        %     &= \mathrm{id}_x \circ g \circ \mathrm{id}_x \\
-        %     &= g
-        %   \end{align*}
-        %   \item ($\varphi_f \circ \psi_f = \mathrm{id}_{\cat{Aut}_{\cat{G}}(y)}$). Take any $h \in \cat{Aut}_{\cat{G}}(y)$. Calculate
-        %   \begin{align*}
-        %     (\varphi_f \circ \psi_f)(h) &= \varphi_f(\psi_f(h)) \\
-        %     &= \varphi_f(f^{-1} \circ h \circ f) \\
-        %     &= f \circ (f^{-1} \circ h \circ f) \circ f^{-1} \\
-        %     &= (f \circ f^{-1}) \circ h \circ (f \circ f^{-1}) \\
-        %     &= \mathrm{id}_y \circ h \circ \mathrm{id}_y \\
-        %     &= h
-        %   \end{align*}
-        %   \end{itemize}
-        %   \end{itemize}
-      \end{proof}
     \end{enumerate}
   \end{enumerate}
 \end{exercise}
